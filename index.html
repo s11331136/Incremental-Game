@@ -76,7 +76,6 @@
       animation: pulse 0.8s infinite alternate;
     }
 
-    /* 4 直排版面設定 */
     .game-container {
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
@@ -104,7 +103,6 @@
     }
     .tab-btn.active { background: #0284c7; color: white; border-color: #38bdf8; }
 
-    /* 點擊區與採礦按鈕 */
     .click-section { align-items: center; justify-content: flex-start; text-align: center; }
 
     @keyframes pulse {
@@ -141,7 +139,6 @@
     }
     .click-btn:active::after { animation: ripple 0.4s ease-out; }
 
-    /* 浮動數字動畫 */
     .float-text {
       position: fixed; pointer-events: none; font-weight: bold; font-size: 1.25rem;
       color: #38bdf8; animation: floatUp 0.8s ease-out forwards; z-index: 9999;
@@ -155,7 +152,6 @@
       100% { opacity: 0; transform: translate(-50%, -70px) scale(0.8); }
     }
 
-    /* 黃金隕石 */
     .asteroid {
       position: fixed; width: 65px; height: 65px; border-radius: 50%;
       background: radial-gradient(circle, #fbbf24, #d97706);
@@ -169,7 +165,6 @@
       100% { transform: translateY(-12px) rotate(15deg); }
     }
 
-    /* 列表卡片與標籤 */
     .item-card {
       background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px;
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
@@ -243,31 +238,25 @@
     </div>
   </div>
 
-  <!-- 4 直排遊戲面板容器 -->
   <div class="game-container">
-    
-    <!-- 第 1 直排：採礦控制面板 -->
     <div class="panel click-section">
       <h3>核心開採器</h3>
       <button class="click-btn" id="main-click-btn">手動採礦<br>+<span id="click-power-display">1</span></button>
       <p style="font-size: 0.8rem; color: var(--text-muted);">點擊按鈕獲取基礎晶礦資源</p>
     </div>
 
-    <!-- 第 2 直排：電力設施面板 -->
     <div class="panel">
       <h3>⚡ 電力設施</h3>
       <p style="font-size: 0.8rem; color: var(--text-muted)">提供持續穩定的能源供給</p>
       <div id="powerplants-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 
-    <!-- 第 3 直排：採礦設施面板 -->
     <div class="panel">
       <h3>⛏️ 採礦設施</h3>
       <p style="font-size: 0.8rem; color: var(--text-muted)">高階設施運作時需消耗電力</p>
       <div id="producers-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 
-    <!-- 第 4 直排：科技 / 商店 / 成就頁籤面板 -->
     <div class="panel">
       <div class="tab-buttons">
         <button class="tab-btn active" onclick="switchTab('upgrades')">科技研發</button>
@@ -275,7 +264,6 @@
         <button class="tab-btn" onclick="switchTab('achievements')">成就獎勵</button>
       </div>
 
-      <!-- 頁籤 1: 科技研發與轉生 -->
       <div id="tab-upgrades" class="tab-content" style="display: flex; flex-direction: column; gap: 10px;">
         <div id="upgrades-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
         <hr style="border-color: #334155; margin: 5px 0;">
@@ -290,19 +278,16 @@
         </div>
       </div>
 
-      <!-- 頁籤 2: 暗物質商店 -->
       <div id="tab-pshop" class="tab-content" style="display: none; flex-direction: column; gap: 8px;">
         <p style="font-size: 0.75rem; color: var(--text-muted);">消耗暗物質解鎖永久強烈效果（轉生後保留）。</p>
         <div id="pshop-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
 
-      <!-- 頁籤 3: 成就列表 -->
       <div id="tab-achievements" class="tab-content" style="display: none; flex-direction: column; gap: 8px;">
         <p style="font-size: 0.75rem; color: var(--text-muted);">解鎖成就可獲得永久全局產量加成（每項成就 +2%）。</p>
         <div id="achievements-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </div>
-
   </div>
 
   <div class="footer-controls">
@@ -311,7 +296,6 @@
   </div>
 
 <script>
-  // 1. 預設遊戲資料結構
   const defaultState = {
     coins: 0,
     totalCoins: 0,
@@ -354,7 +338,9 @@
   let buffTimer = 0;
   let autoClickAccumulator = 0;
 
+  // 防呆數字格式化
   function formatNum(n) {
+    if (isNaN(n) || n === null || n === undefined) return "0";
     if (n < 1000) return Math.floor(n).toString();
     const suffixes = ["", "K", "M", "B", "T", "Qa", "Qi"];
     const i = Math.floor(Math.log10(n) / 3);
@@ -378,20 +364,20 @@
     return "MAX";
   }
 
-  // 2. 電力與資源計算邏輯
   function getEnergyStats() {
     let gen = 0;
-    let gridMult = gameState.upgrades.gridOverclock.bought ? gameState.upgrades.gridOverclock.multiplier : 1;
+    let gridMult = gameState.upgrades.gridOverclock?.bought ? gameState.upgrades.gridOverclock.multiplier : 1;
     for (const key in gameState.powerPlants) {
       const plant = gameState.powerPlants[key];
-      gen += plant.count * plant.eps * gridMult;
+      gen += (plant.count || 0) * (plant.eps || 0) * gridMult;
     }
 
     let cons = 0;
-    const effMult = 1 - (gameState.pshop.energyEfficiency.level * 0.1);
+    const effLevel = gameState.pshop?.energyEfficiency?.level || 0;
+    const effMult = 1 - (effLevel * 0.1);
     for (const key in gameState.producers) {
       const p = gameState.producers[key];
-      cons += p.count * p.energyReq * effMult;
+      cons += (p.count || 0) * (p.energyReq || 0) * effMult;
     }
 
     return { gen, cons, net: gen - cons };
@@ -402,7 +388,7 @@
     if (stats.cons === 0 || gameState.energy > 0 || stats.net >= 0) {
       return 1.0;
     }
-    return 0.2; // 斷電懲罰 20%
+    return 0.2;
   }
 
   function getAchMult() {
@@ -412,19 +398,19 @@
 
   function getClickPower() {
     let base = 1;
-    if (gameState.upgrades.laserClick.bought) base *= gameState.upgrades.laserClick.multiplier;
-    const prestigeMult = 1 + (gameState.prestigePoints * 0.1);
+    if (gameState.upgrades.laserClick?.bought) base *= gameState.upgrades.laserClick.multiplier;
+    const prestigeMult = 1 + ((gameState.prestigePoints || 0) * 0.1);
     return base * prestigeMult * getAchMult();
   }
 
   function getPowerPlantCost(key) {
     const plant = gameState.powerPlants[key];
-    return Math.floor(plant.baseCost * Math.pow(1.15, plant.count));
+    return Math.floor(plant.baseCost * Math.pow(1.15, plant.count || 0));
   }
 
   function getProducerCost(key) {
     const p = gameState.producers[key];
-    return Math.floor(p.baseCost * Math.pow(1.15, p.count));
+    return Math.floor(p.baseCost * Math.pow(1.15, p.count || 0));
   }
 
   function getCPS() {
@@ -433,28 +419,29 @@
 
     for (const key in gameState.producers) {
       const p = gameState.producers[key];
-      const milestoneMult = getProducerMilestoneMult(p.count);
-      let pCPS = p.count * p.cps * milestoneMult;
-      if (p.energyReq > 0) pCPS *= powerEfficiency;
+      const count = p.count || 0;
+      const milestoneMult = getProducerMilestoneMult(count);
+      let pCPS = count * p.cps * milestoneMult;
+      if ((p.energyReq || 0) > 0) pCPS *= powerEfficiency;
       rawCPS += pCPS;
     }
 
-    if (gameState.upgrades.aiOptimization.bought) rawCPS *= gameState.upgrades.aiOptimization.multiplier;
-    let total = rawCPS * (1 + gameState.prestigePoints * 0.1) * getAchMult();
+    if (gameState.upgrades.aiOptimization?.bought) rawCPS *= gameState.upgrades.aiOptimization.multiplier;
+    let total = rawCPS * (1 + (gameState.prestigePoints || 0) * 0.1) * getAchMult();
     if (buffTimer > 0) total *= 7;
     return total;
   }
 
   function getPrestigeGain() {
-    if (gameState.totalCoins < 100000) return 0;
+    if ((gameState.totalCoins || 0) < 100000) return 0;
     return Math.floor(Math.sqrt(gameState.totalCoins / 100000));
   }
 
   function getCritChance() {
-    return 0.15 + (gameState.pshop.critChance.level * 0.05);
+    const level = gameState.pshop?.critChance?.level || 0;
+    return 0.15 + (level * 0.05);
   }
 
-  // 3. 成就檢測
   function checkAchievements() {
     if (!gameState.achievements.click1.unlocked && gameState.totalClicks >= 1) unlockAchievement("click1");
     if (!gameState.achievements.click100.unlocked && gameState.totalClicks >= 100) unlockAchievement("click100");
@@ -471,7 +458,6 @@
     updateUI();
   }
 
-  // 4. UI 渲染與頁籤切換
   function switchTab(tabName) {
     document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(content => content.style.display = "none");
@@ -481,7 +467,6 @@
   }
 
   function initDOM() {
-    // 電力設施渲染
     const plantContainer = document.getElementById("powerplants-container");
     plantContainer.innerHTML = "";
     for (const key in gameState.powerPlants) {
@@ -499,7 +484,6 @@
       plantContainer.appendChild(div);
     }
 
-    // 採礦設施渲染
     const pContainer = document.getElementById("producers-container");
     pContainer.innerHTML = "";
     for (const key in gameState.producers) {
@@ -519,7 +503,6 @@
       pContainer.appendChild(div);
     }
 
-    // 科技研發渲染
     const uContainer = document.getElementById("upgrades-container");
     uContainer.innerHTML = "";
     for (const key in gameState.upgrades) {
@@ -538,7 +521,6 @@
       uContainer.appendChild(div);
     }
 
-    // 暗物質商店渲染
     const psContainer = document.getElementById("pshop-container");
     psContainer.innerHTML = "";
     for (const key in gameState.pshop) {
@@ -556,7 +538,6 @@
       psContainer.appendChild(div);
     }
 
-    // 成就清單渲染
     const aContainer = document.getElementById("achievements-container");
     aContainer.innerHTML = "";
     for (const key in gameState.achievements) {
@@ -581,37 +562,35 @@
     document.getElementById("prestige-display").innerText = formatNum(gameState.prestigePoints);
     document.getElementById("click-power-display").innerText = formatNum(getClickPower());
 
-    // 能源狀態
     const eStats = getEnergyStats();
     const netSign = eStats.net >= 0 ? "+" : "";
     document.getElementById("energy-rate-display").innerText = `${netSign}${eStats.net.toFixed(1)}/s (發電: ${eStats.gen.toFixed(1)} / 耗電: ${eStats.cons.toFixed(1)})`;
 
-    // 斷電警告
     const powerWarning = document.getElementById("power-warning");
     powerWarning.style.display = getPowerEfficiency() < 1.0 ? "block" : "none";
 
-    // 更新發電廠列表
     for (const key in gameState.powerPlants) {
       const plant = gameState.powerPlants[key];
       const cost = getPowerPlantCost(key);
-      document.getElementById(`count-plant-${key}`).innerText = plant.count;
+      document.getElementById(`count-plant-${key}`).innerText = plant.count || 0;
       document.getElementById(`cost-plant-${key}`).innerText = formatNum(cost);
       document.getElementById(`buy-plant-${key}`).disabled = gameState.coins < cost;
     }
 
-    // 更新採礦設施列表
-    const effMult = 1 - (gameState.pshop.energyEfficiency.level * 0.1);
+    const effLevel = gameState.pshop?.energyEfficiency?.level || 0;
+    const effMult = 1 - (effLevel * 0.1);
     for (const key in gameState.producers) {
       const p = gameState.producers[key];
       const cost = getProducerCost(key);
-      const mult = getProducerMilestoneMult(p.count);
-      const target = getNextMilestoneTarget(p.count);
+      const count = p.count || 0;
+      const mult = getProducerMilestoneMult(count);
+      const target = getNextMilestoneTarget(count);
 
-      document.getElementById(`count-${key}`).innerText = p.count;
+      document.getElementById(`count-${key}`).innerText = count;
       document.getElementById(`cost-${key}`).innerText = formatNum(cost);
       
       const reqEl = document.getElementById(`energy-req-${key}`);
-      if (p.energyReq > 0) {
+      if ((p.energyReq || 0) > 0) {
         const actualReq = (p.energyReq * effMult).toFixed(1);
         reqEl.innerText = `⚡ 耗電: ${actualReq}/台`;
         reqEl.className = getPowerEfficiency() < 1.0 ? "energy-req shortage" : "energy-req";
@@ -619,11 +598,10 @@
         reqEl.innerText = `⚡ 無需消耗電力`;
       }
 
-      document.getElementById(`milestone-${key}`).innerText = `里程碑: x${mult} (${target === 'MAX' ? '上限' : `${p.count}/${target}`})`;
+      document.getElementById(`milestone-${key}`).innerText = `里程碑: x${mult} (${target === 'MAX' ? '上限' : `${count}/${target}`})`;
       document.getElementById(`buy-${key}`).disabled = gameState.coins < cost;
     }
 
-    // 科技研發
     for (const key in gameState.upgrades) {
       const u = gameState.upgrades[key];
       const card = document.getElementById(`upgrade-card-${key}`);
@@ -635,21 +613,18 @@
       }
     }
 
-    // 暗物質商店
     for (const key in gameState.pshop) {
       const ps = gameState.pshop[key];
-      document.getElementById(`ps-lv-${key}`).innerText = ps.level;
+      document.getElementById(`ps-lv-${key}`).innerText = ps.level || 0;
       const btn = document.getElementById(`buy-ps-${key}`);
       btn.disabled = gameState.prestigePoints < ps.cost || ps.level >= ps.maxLevel;
     }
 
-    // 轉生按鈕
     const pGain = getPrestigeGain();
     const pBtn = document.getElementById("prestige-btn");
     document.getElementById("prestige-gain-display").innerText = formatNum(pGain);
     pBtn.disabled = pGain <= 0;
 
-    // Buff 提示
     const buffBanner = document.getElementById("buff-status");
     if (buffTimer > 0) {
       buffBanner.style.display = "block";
@@ -659,7 +634,6 @@
     }
   }
 
-  // 5. 浮動文字
   function createFloatText(x, y, text, isCrit = false, isAchieve = false) {
     const el = document.createElement("div");
     let cls = "float-text";
@@ -676,7 +650,6 @@
     el.addEventListener("animationend", () => el.remove());
   }
 
-  // 6. 太空黃金隕石
   function scheduleNextAsteroid() {
     const delay = (Math.random() * 120 + 60) * 1000;
     setTimeout(spawnAsteroid, delay);
@@ -704,7 +677,6 @@
     scheduleNextAsteroid();
   }
 
-  // 7. 互動邏輯
   function doManualClick(e) {
     let power = getClickPower();
     const isCrit = Math.random() < getCritChance();
@@ -729,7 +701,7 @@
     const cost = getPowerPlantCost(key);
     if (gameState.coins >= cost) {
       gameState.coins -= cost;
-      gameState.powerPlants[key].count++;
+      gameState.powerPlants[key].count = (gameState.powerPlants[key].count || 0) + 1;
       checkAchievements();
       updateUI();
     }
@@ -739,7 +711,7 @@
     const cost = getProducerCost(key);
     if (gameState.coins >= cost) {
       gameState.coins -= cost;
-      gameState.producers[key].count++;
+      gameState.producers[key].count = (gameState.producers[key].count || 0) + 1;
       checkAchievements();
       updateUI();
     }
@@ -758,7 +730,7 @@
     const ps = gameState.pshop[key];
     if (gameState.prestigePoints >= ps.cost && ps.level < ps.maxLevel) {
       gameState.prestigePoints -= ps.cost;
-      ps.level++;
+      ps.level = (ps.level || 0) + 1;
       updateUI();
     }
   }
@@ -781,36 +753,54 @@
     }
   });
 
-  // 8. 存檔與離線機制
   function saveGame(manual = false) {
     gameState.lastSaveTime = Date.now();
     localStorage.setItem("incremental_game_save", JSON.stringify(gameState));
     if (manual) alert("遊戲進度已成功儲存！");
   }
 
+  // 修正存檔自動補齊缺少的屬性
   function loadGame() {
     const saved = localStorage.getItem("incremental_game_save");
     if (saved) {
-      const parsed = JSON.parse(saved);
-      gameState = {
-        ...defaultState,
-        ...parsed,
-        powerPlants: { ...defaultState.powerPlants, ...(parsed.powerPlants || {}) },
-        producers: { ...defaultState.producers, ...(parsed.producers || {}) },
-        upgrades: { ...defaultState.upgrades, ...(parsed.upgrades || {}) },
-        pshop: { ...defaultState.pshop, ...(parsed.pshop || {}) },
-        achievements: { ...defaultState.achievements, ...(parsed.achievements || {}) }
-      };
+      try {
+        const parsed = JSON.parse(saved);
+        gameState = {
+          ...defaultState,
+          ...parsed
+        };
 
-      const now = Date.now();
-      const offlineSeconds = (now - gameState.lastSaveTime) / 1000;
-      if (offlineSeconds > 5) {
-        const offlineGains = getCPS() * offlineSeconds;
-        gameState.coins += offlineGains;
-        gameState.totalCoins += offlineGains;
-        setTimeout(() => {
-          alert(`歡迎回來！離線 ${Math.floor(offlineSeconds)} 秒期間，你一共獲得了 ${formatNum(offlineGains)} 晶礦。`);
-        }, 500);
+        // 深層補充預設屬性（避免舊存檔蓋掉新屬性）
+        for (const k in defaultState.powerPlants) {
+          gameState.powerPlants[k] = { ...defaultState.powerPlants[k], ...(parsed.powerPlants?.[k] || {}) };
+        }
+        for (const k in defaultState.producers) {
+          gameState.producers[k] = { ...defaultState.producers[k], ...(parsed.producers?.[k] || {}) };
+        }
+        for (const k in defaultState.upgrades) {
+          gameState.upgrades[k] = { ...defaultState.upgrades[k], ...(parsed.upgrades?.[k] || {}) };
+        }
+        for (const k in defaultState.pshop) {
+          gameState.pshop[k] = { ...defaultState.pshop[k], ...(parsed.pshop?.[k] || {}) };
+        }
+        for (const k in defaultState.achievements) {
+          gameState.achievements[k] = { ...defaultState.achievements[k], ...(parsed.achievements?.[k] || {}) };
+        }
+
+        const now = Date.now();
+        const offlineSeconds = (now - gameState.lastSaveTime) / 1000;
+        if (offlineSeconds > 5) {
+          const offlineGains = getCPS() * offlineSeconds;
+          if (!isNaN(offlineGains)) {
+            gameState.coins += offlineGains;
+            gameState.totalCoins += offlineGains;
+            setTimeout(() => {
+              alert(`歡迎回來！離線 ${Math.floor(offlineSeconds)} 秒期間，你一共獲得了 ${formatNum(offlineGains)} 晶礦。`);
+            }, 500);
+          }
+        }
+      } catch (e) {
+        console.error("載入存檔失敗，使用預設值", e);
       }
     }
   }
@@ -822,7 +812,6 @@
     }
   }
 
-  // 9. 主時間迴圈
   let lastFrameTime = Date.now();
   function gameLoop() {
     const now = Date.now();
@@ -835,11 +824,13 @@
     }
 
     const eStats = getEnergyStats();
-    gameState.energy += eStats.net * dt;
-    if (gameState.energy < 0) gameState.energy = 0;
-    if (eStats.net > 0) gameState.totalEnergy += eStats.net * dt;
+    if (!isNaN(eStats.net)) {
+      gameState.energy += eStats.net * dt;
+      if (gameState.energy < 0) gameState.energy = 0;
+      if (eStats.net > 0) gameState.totalEnergy += eStats.net * dt;
+    }
 
-    const autoClickLevel = gameState.pshop.autoClick.level;
+    const autoClickLevel = gameState.pshop?.autoClick?.level || 0;
     if (autoClickLevel > 0) {
       autoClickAccumulator += dt * autoClickLevel;
       while (autoClickAccumulator >= 1) {
@@ -849,8 +840,10 @@
     }
 
     const gained = getCPS() * dt;
-    gameState.coins += gained;
-    gameState.totalCoins += gained;
+    if (!isNaN(gained)) {
+      gameState.coins += gained;
+      gameState.totalCoins += gained;
+    }
 
     checkAchievements();
     updateUI();
@@ -859,7 +852,6 @@
 
   setInterval(() => saveGame(false), 10000);
 
-  // 啟動流程
   loadGame();
   initDOM();
   updateUI();
