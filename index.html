@@ -10,12 +10,35 @@
       --card-bg: #1e293b;
       --accent: #38bdf8;
       --accent-gold: #f59e0b;
+      --accent-energy: #10b981;
+      --accent-danger: #ef4444;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button { outline: none; }
+
+    body { 
+      background-color: var(--bg-color); 
+      color: var(--text-main); 
+      padding: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      min-height: 100vh; 
+      overflow-x: hidden; 
+    }
 
     header { text-align: center; margin-bottom: 20px; }
     h1 { color: var(--accent); margin-bottom: 5px; }
@@ -23,111 +46,157 @@
     .stats-bar {
       display: flex; gap: 20px; background: var(--card-bg); padding: 15px 25px; 
       border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;
+      align-items: center; position: relative;
     }
     .stat-item { text-align: center; }
-    .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--accent-gold); }
+    .stat-value { font-size: 1.4rem; font-weight: bold; color: var(--accent-gold); }
+    .energy-value { color: var(--accent-energy); }
 
+    .buff-banner {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      display: none;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .warning-banner {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--accent-danger);
+      color: var(--accent-danger);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      display: none;
+      animation: pulse 0.8s infinite alternate;
+    }
+
+    /* 4 直排版面設定 */
     .game-container {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-      gap: 20px; width: 100%; max-width: 1100px;
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+      gap: 15px; 
+      width: 100%; 
+      max-width: 1500px;
+    }
+
+    @media (min-width: 1200px) {
+      .game-container {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     .panel {
-      background: var(--card-bg); border-radius: 12px; padding: 20px; 
-      border: 1px solid #334155; display: flex; flex-direction: column; gap: 15px;
+      background: var(--card-bg); border-radius: 12px; padding: 18px; 
+      border: 1px solid #334155; display: flex; flex-direction: column; gap: 12px;
     }
 
-    /* 點擊區與採礦按鈕動畫 */
-    .click-section { align-items: center; justify-content: center; text-align: center; }
+    .tab-buttons { display: flex; gap: 6px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+    .tab-btn {
+      flex: 1; background: #0f172a; border: 1px solid #334155; color: var(--text-muted);
+      padding: 8px 4px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: #0284c7; color: white; border-color: #38bdf8; }
+
+    /* 點擊區與採礦按鈕 */
+    .click-section { align-items: center; justify-content: flex-start; text-align: center; }
 
     @keyframes pulse {
-      0% {
-        transform: scale(1);
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-      }
-      50% {
-        transform: scale(1.04);
-        box-shadow: 0 0 35px rgba(56, 189, 248, 0.6);
-      }
-      100% {
-        transform: scale(1);
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-      }
+      0% { transform: scale(1); box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+      50% { transform: scale(1.04); box-shadow: 0 0 35px rgba(56, 189, 248, 0.6); }
+      100% { transform: scale(1); box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
     }
 
-    @keyframes mineClick {
-      0% { transform: scale(0.9); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes ripple {
-      0% {
-        transform: scale(1);
-        opacity: 0.7;
-      }
-      100% {
-        transform: scale(1.6);
-        opacity: 0;
-      }
-    }
+    @keyframes mineClick { 0% { transform: scale(0.9); } 100% { transform: scale(1); } }
+    @keyframes ripple { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.6); opacity: 0; } }
 
     .click-btn {
-      width: 160px; height: 160px; border-radius: 50%;
+      width: 150px; height: 150px; border-radius: 50%;
       background: linear-gradient(135deg, #0284c7, #38bdf8);
       border: 4px solid #7dd3fc; color: white;
-      font-size: 1.2rem; font-weight: bold; cursor: pointer;
+      font-size: 1.1rem; font-weight: bold; cursor: pointer;
       display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
       transition: box-shadow 0.2s, background 0.2s;
-      user-select: none;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
       animation: pulse 2.5s infinite ease-in-out;
+      margin: 20px 0;
       will-change: transform, box-shadow;
     }
 
-    .click-btn:hover {
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.7);
-    }
-
+    .click-btn:hover { box-shadow: 0 0 30px rgba(56, 189, 248, 0.7); }
     .click-btn:active {
-      animation: mineClick 0.1s ease-out;
-      transform: none;
+      animation: mineClick 0.1s ease-out; transform: none;
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); 
     }
 
     .click-btn::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 50%;
-      opacity: 0;
-      pointer-events: none;
-      transition: none;
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.6); border-radius: 50%; opacity: 0; pointer-events: none;
+    }
+    .click-btn:active::after { animation: ripple 0.4s ease-out; }
+
+    /* 浮動數字動畫 */
+    .float-text {
+      position: fixed; pointer-events: none; font-weight: bold; font-size: 1.25rem;
+      color: #38bdf8; animation: floatUp 0.8s ease-out forwards; z-index: 9999;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+    }
+    .float-text.crit { color: #f59e0b; font-size: 1.6rem; text-shadow: 0 0 12px rgba(245, 158, 11, 0.9); }
+    .float-text.achieve { color: #c084fc; font-size: 1.2rem; text-shadow: 0 0 10px rgba(192, 132, 252, 0.9); }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      50% { transform: translate(-50%, -35px) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -70px) scale(0.8); }
     }
 
-    .click-btn:active::after {
-      animation: ripple 0.4s ease-out;
+    /* 黃金隕石 */
+    .asteroid {
+      position: fixed; width: 65px; height: 65px; border-radius: 50%;
+      background: radial-gradient(circle, #fbbf24, #d97706);
+      box-shadow: 0 0 25px #f59e0b, 0 0 50px rgba(245, 158, 11, 0.6);
+      cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; animation: asteroidFloat 1.5s infinite alternate ease-in-out;
+    }
+    .asteroid:hover { transform: scale(1.15); }
+    @keyframes asteroidFloat {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-12px) rotate(15deg); }
     }
 
-    /* 列表項目按鈕 */
+    /* 列表卡片與標籤 */
     .item-card {
-      background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px;
-      display: flex; justify-content: space-between; align-items: center;
+      background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
     }
-    .item-info { display: flex; flex-direction: column; gap: 4px; }
-    .item-name { font-weight: bold; }
-    .item-cost { font-size: 0.85rem; color: var(--accent-gold); }
-    .item-desc { font-size: 0.8rem; color: var(--text-muted); }
+    .item-info { display: flex; flex-direction: column; gap: 3px; }
+    .item-name { font-weight: bold; font-size: 0.9rem; }
+    .item-cost { font-size: 0.8rem; color: var(--accent-gold); }
+    .item-desc { font-size: 0.75rem; color: var(--text-muted); }
+    .energy-req { font-size: 0.75rem; color: var(--accent-energy); font-weight: bold; }
+    .energy-req.shortage { color: var(--accent-danger); }
+    .milestone-badge { font-size: 0.7rem; color: #38bdf8; font-weight: bold; }
 
     button.buy-btn {
-      background: #0284c7; border: none; color: white; padding: 8px 16px; 
-      border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s;
+      background: #0284c7; border: none; color: white; padding: 6px 10px; 
+      border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
+      transition: background 0.2s; white-space: nowrap;
     }
     button.buy-btn:disabled { background: #475569; cursor: not-allowed; opacity: 0.6; }
     button.buy-btn:not(:disabled):hover { background: #0369a1; }
 
-    /* 控制區 */
+    .achieve-card {
+      background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px;
+      display: flex; align-items: center; gap: 10px; opacity: 0.5;
+    }
+    .achieve-card.unlocked { opacity: 1; border-color: #c084fc; background: rgba(192, 132, 252, 0.05); }
+    .achieve-icon { font-size: 1.4rem; }
+
     .footer-controls { margin-top: 25px; display: flex; gap: 10px; }
     .ctrl-btn { background: #334155; border: none; color: white; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
     .ctrl-btn:hover { background: #475569; }
@@ -136,7 +205,7 @@
 
     .prestige-btn {
       background: linear-gradient(135deg, #d97706, #f59e0b); color: white; border: none;
-      padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
+      padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 0.85rem;
     }
     .prestige-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   </style>
@@ -145,7 +214,7 @@
 
   <header>
     <h1>🌌 星際礦業公司</h1>
-    <p style="color: var(--text-muted)">開採晶礦、自動化設施，建立你的跨星系企業</p>
+    <p style="color: var(--text-muted)">開採晶礦、平衡電力網，建立你的跨星系企業</p>
   </header>
 
   <div class="stats-bar">
@@ -158,42 +227,82 @@
       <div class="stat-value" id="cps-display">0</div>
     </div>
     <div class="stat-item">
-      <div>暗物質 (Prestige Points)</div>
+      <div>儲備能源 (Energy)</div>
+      <div class="stat-value energy-value" id="energy-display">0</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);" id="energy-rate-display">0/s</div>
+    </div>
+    <div class="stat-item">
+      <div>暗物質 (Prestige)</div>
       <div class="stat-value" id="prestige-display" style="color: #c084fc;">0</div>
+    </div>
+    <div class="buff-banner" id="buff-status">
+      🔥 黃金狂暴！CPS x7 (<span id="buff-time">0</span>s)
+    </div>
+    <div class="warning-banner" id="power-warning">
+      ⚡ 電力供不應求！高階設施效率下降至 20%
     </div>
   </div>
 
+  <!-- 4 直排遊戲面板容器 -->
   <div class="game-container">
-    <!-- 1. 採礦控制面板 -->
+    
+    <!-- 第 1 直排：採礦控制面板 -->
     <div class="panel click-section">
       <h3>核心開採器</h3>
       <button class="click-btn" id="main-click-btn">手動採礦<br>+<span id="click-power-display">1</span></button>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">點擊按鈕獲取基礎晶礦資源</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">點擊按鈕獲取基礎晶礦資源</p>
     </div>
 
-    <!-- 2. 自動化設施 -->
+    <!-- 第 2 直排：電力設施面板 -->
     <div class="panel">
-      <h3>自動化採礦設施</h3>
-      <div id="producers-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      <h3>⚡ 電力設施</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted)">提供持續穩定的能源供給</p>
+      <div id="powerplants-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 
-    <!-- 3. 科技升級與轉生 -->
+    <!-- 第 3 直排：採礦設施面板 -->
     <div class="panel">
-      <h3>科技研發 & 轉生</h3>
-      <div id="upgrades-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
-      
-      <hr style="border-color: #334155; margin: 10px 0;">
-      
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <h4 style="color: #c084fc;">量子轉生 (Prestige)</h4>
-        <p style="font-size: 0.8rem; color: var(--text-muted)">
-          重置所有金幣與設施，換取「暗物質」。每顆暗物質提供 <strong>+10% 全局產量加成</strong>。
-        </p>
-        <button class="prestige-btn" id="prestige-btn" disabled>
-          轉生獲得 +<span id="prestige-gain-display">0</span> 暗物質
-        </button>
+      <h3>⛏️ 採礦設施</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted)">高階設施運作時需消耗電力</p>
+      <div id="producers-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <!-- 第 4 直排：科技 / 商店 / 成就頁籤面板 -->
+    <div class="panel">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab('upgrades')">科技研發</button>
+        <button class="tab-btn" onclick="switchTab('pshop')">暗物質商店</button>
+        <button class="tab-btn" onclick="switchTab('achievements')">成就獎勵</button>
+      </div>
+
+      <!-- 頁籤 1: 科技研發與轉生 -->
+      <div id="tab-upgrades" class="tab-content" style="display: flex; flex-direction: column; gap: 10px;">
+        <div id="upgrades-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <hr style="border-color: #334155; margin: 5px 0;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <h4 style="color: #c084fc; font-size: 0.9rem;">量子轉生 (Prestige)</h4>
+          <p style="font-size: 0.75rem; color: var(--text-muted)">
+            重置金幣與設施，換取「暗物質」。每顆暗物質提供 <strong>+10% 全局產量</strong>。
+          </p>
+          <button class="prestige-btn" id="prestige-btn" disabled>
+            轉生獲得 +<span id="prestige-gain-display">0</span> 暗物質
+          </button>
+        </div>
+      </div>
+
+      <!-- 頁籤 2: 暗物質商店 -->
+      <div id="tab-pshop" class="tab-content" style="display: none; flex-direction: column; gap: 8px;">
+        <p style="font-size: 0.75rem; color: var(--text-muted);">消耗暗物質解鎖永久強烈效果（轉生後保留）。</p>
+        <div id="pshop-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+      <!-- 頁籤 3: 成就列表 -->
+      <div id="tab-achievements" class="tab-content" style="display: none; flex-direction: column; gap: 8px;">
+        <p style="font-size: 0.75rem; color: var(--text-muted);">解鎖成就可獲得永久全局產量加成（每項成就 +2%）。</p>
+        <div id="achievements-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </div>
+
   </div>
 
   <div class="footer-controls">
@@ -202,26 +311,49 @@
   </div>
 
 <script>
-  // 1. 遊戲狀態資料結構 (State)
+  // 1. 預設遊戲資料結構
   const defaultState = {
     coins: 0,
     totalCoins: 0,
+    energy: 50,
+    totalEnergy: 50,
+    totalClicks: 0,
     prestigePoints: 0,
     lastSaveTime: Date.now(),
+    powerPlants: {
+      solar: { count: 0, baseCost: 60, eps: 2, name: "太陽能陣列" },
+      reactor: { count: 0, baseCost: 1200, eps: 25, name: "核能反應爐" }
+    },
     producers: {
-      drone: { count: 0, baseCost: 15, cps: 0.5, name: "採礦無人機" },
-      rover: { count: 0, baseCost: 100, cps: 4, name: "自動探勘車" },
-      rig:   { count: 0, baseCost: 1100, cps: 32, name: "深層鑽探井" }
+      drone:     { count: 0, baseCost: 15, cps: 0.5, energyReq: 0, name: "採礦無人機" },
+      rover:     { count: 0, baseCost: 100, cps: 4, energyReq: 0, name: "自動探勘車" },
+      rig:       { count: 0, baseCost: 1100, cps: 32, energyReq: 3, name: "深層鑽探井" },
+      disruptor: { count: 0, baseCost: 15000, cps: 280, energyReq: 25, name: "反物質採礦機" }
     },
     upgrades: {
-      laserClick: { bought: false, cost: 100, name: "雷射挖掘頭", desc: "點擊收益 x2", type: "click", multiplier: 2 },
-      aiOptimization: { bought: false, cost: 500, name: "AI 算力優化", desc: "所有設施產能 x2", type: "global", multiplier: 2 }
+      laserClick: { bought: false, cost: 100, name: "雷射挖掘頭", desc: "點擊收益 x2", multiplier: 2 },
+      aiOptimization: { bought: false, cost: 500, name: "AI 算力優化", desc: "所有設施產能 x2", multiplier: 2 },
+      gridOverclock: { bought: false, cost: 2000, name: "電網超頻協定", desc: "發電設施產能 x1.5", multiplier: 1.5 }
+    },
+    pshop: {
+      autoClick: { level: 0, maxLevel: 5, cost: 2, name: "量子自動點擊", desc: "每秒自動觸發點擊" },
+      critChance: { level: 0, maxLevel: 5, cost: 3, name: "超能暴擊率", desc: "暴擊率提升 +5%" },
+      energyEfficiency: { level: 0, maxLevel: 5, cost: 4, name: "節能技術", desc: "設施耗電量降低 -10%" }
+    },
+    achievements: {
+      click1: { unlocked: false, name: "礦業開端", desc: "手動採礦 1 次", icon: "⛏️" },
+      click100: { unlocked: false, name: "勤奮礦工", desc: "手動採礦 100 次", icon: "💪" },
+      solar5: { unlocked: false, name: "綠能先風", desc: "建造 5 座太陽能陣列", icon: "☀️" },
+      reactor1: { unlocked: false, name: "核能時代", desc: "建造 1 座核能反應爐", icon: "☢️" },
+      coins10k: { unlocked: false, name: "晶礦富豪", desc: "累積獲得 10,000 晶礦", icon: "💰" },
+      prestige1: { unlocked: false, name: "量子躍遷", desc: "完成第一次量子轉生", icon: "🌌" }
     }
   };
 
   let gameState = JSON.parse(JSON.stringify(defaultState));
+  let buffTimer = 0;
+  let autoClickAccumulator = 0;
 
-  // 2. 輔助函式：大數格式化 (1,000 -> 1K, 1,000,000 -> 1M)
   function formatNum(n) {
     if (n < 1000) return Math.floor(n).toString();
     const suffixes = ["", "K", "M", "B", "T", "Qa", "Qi"];
@@ -230,12 +362,64 @@
     return (n / Math.pow(10, i * 3)).toFixed(2) + " " + suffixes[i];
   }
 
-  // 3. 核心邏輯計算
+  function getProducerMilestoneMult(count) {
+    if (count >= 200) return 16;
+    if (count >= 100) return 8;
+    if (count >= 50) return 4;
+    if (count >= 25) return 2;
+    return 1;
+  }
+
+  function getNextMilestoneTarget(count) {
+    if (count < 25) return 25;
+    if (count < 50) return 50;
+    if (count < 100) return 100;
+    if (count < 200) return 200;
+    return "MAX";
+  }
+
+  // 2. 電力與資源計算邏輯
+  function getEnergyStats() {
+    let gen = 0;
+    let gridMult = gameState.upgrades.gridOverclock.bought ? gameState.upgrades.gridOverclock.multiplier : 1;
+    for (const key in gameState.powerPlants) {
+      const plant = gameState.powerPlants[key];
+      gen += plant.count * plant.eps * gridMult;
+    }
+
+    let cons = 0;
+    const effMult = 1 - (gameState.pshop.energyEfficiency.level * 0.1);
+    for (const key in gameState.producers) {
+      const p = gameState.producers[key];
+      cons += p.count * p.energyReq * effMult;
+    }
+
+    return { gen, cons, net: gen - cons };
+  }
+
+  function getPowerEfficiency() {
+    const stats = getEnergyStats();
+    if (stats.cons === 0 || gameState.energy > 0 || stats.net >= 0) {
+      return 1.0;
+    }
+    return 0.2; // 斷電懲罰 20%
+  }
+
+  function getAchMult() {
+    const unlockedCount = Object.values(gameState.achievements).filter(a => a.unlocked).length;
+    return 1 + (unlockedCount * 0.02);
+  }
+
   function getClickPower() {
     let base = 1;
     if (gameState.upgrades.laserClick.bought) base *= gameState.upgrades.laserClick.multiplier;
     const prestigeMult = 1 + (gameState.prestigePoints * 0.1);
-    return base * prestigeMult;
+    return base * prestigeMult * getAchMult();
+  }
+
+  function getPowerPlantCost(key) {
+    const plant = gameState.powerPlants[key];
+    return Math.floor(plant.baseCost * Math.pow(1.15, plant.count));
   }
 
   function getProducerCost(key) {
@@ -245,13 +429,20 @@
 
   function getCPS() {
     let rawCPS = 0;
+    const powerEfficiency = getPowerEfficiency();
+
     for (const key in gameState.producers) {
       const p = gameState.producers[key];
-      rawCPS += p.count * p.cps;
+      const milestoneMult = getProducerMilestoneMult(p.count);
+      let pCPS = p.count * p.cps * milestoneMult;
+      if (p.energyReq > 0) pCPS *= powerEfficiency;
+      rawCPS += pCPS;
     }
+
     if (gameState.upgrades.aiOptimization.bought) rawCPS *= gameState.upgrades.aiOptimization.multiplier;
-    const prestigeMult = 1 + (gameState.prestigePoints * 0.1);
-    return rawCPS * prestigeMult;
+    let total = rawCPS * (1 + gameState.prestigePoints * 0.1) * getAchMult();
+    if (buffTimer > 0) total *= 7;
+    return total;
   }
 
   function getPrestigeGain() {
@@ -259,8 +450,56 @@
     return Math.floor(Math.sqrt(gameState.totalCoins / 100000));
   }
 
-  // 4. UI 渲染與動態生成
+  function getCritChance() {
+    return 0.15 + (gameState.pshop.critChance.level * 0.05);
+  }
+
+  // 3. 成就檢測
+  function checkAchievements() {
+    if (!gameState.achievements.click1.unlocked && gameState.totalClicks >= 1) unlockAchievement("click1");
+    if (!gameState.achievements.click100.unlocked && gameState.totalClicks >= 100) unlockAchievement("click100");
+    if (!gameState.achievements.solar5.unlocked && gameState.powerPlants.solar.count >= 5) unlockAchievement("solar5");
+    if (!gameState.achievements.reactor1.unlocked && gameState.powerPlants.reactor.count >= 1) unlockAchievement("reactor1");
+    if (!gameState.achievements.coins10k.unlocked && gameState.totalCoins >= 10000) unlockAchievement("coins10k");
+    if (!gameState.achievements.prestige1.unlocked && gameState.prestigePoints > 0) unlockAchievement("prestige1");
+  }
+
+  function unlockAchievement(key) {
+    gameState.achievements[key].unlocked = true;
+    createFloatText(window.innerWidth / 2, 100, `🏆 解鎖成就：${gameState.achievements[key].name}`, false, true);
+    initDOM();
+    updateUI();
+  }
+
+  // 4. UI 渲染與頁籤切換
+  function switchTab(tabName) {
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(content => content.style.display = "none");
+
+    event.target.classList.add("active");
+    document.getElementById(`tab-${tabName}`).style.display = "flex";
+  }
+
   function initDOM() {
+    // 電力設施渲染
+    const plantContainer = document.getElementById("powerplants-container");
+    plantContainer.innerHTML = "";
+    for (const key in gameState.powerPlants) {
+      const plant = gameState.powerPlants[key];
+      const div = document.createElement("div");
+      div.className = "item-card";
+      div.innerHTML = `
+        <div class="item-info">
+          <span class="item-name">${plant.name} (<span id="count-plant-${key}">0</span>)</span>
+          <span class="item-desc" style="color: var(--accent-energy)">+${plant.eps} 能源 / 秒</span>
+          <span class="item-cost">花費: <span id="cost-plant-${key}">${plant.baseCost}</span> 晶礦</span>
+        </div>
+        <button class="buy-btn" id="buy-plant-${key}" onclick="buyPowerPlant('${key}')">建造</button>
+      `;
+      plantContainer.appendChild(div);
+    }
+
+    // 採礦設施渲染
     const pContainer = document.getElementById("producers-container");
     pContainer.innerHTML = "";
     for (const key in gameState.producers) {
@@ -271,6 +510,8 @@
         <div class="item-info">
           <span class="item-name">${p.name} (<span id="count-${key}">0</span>)</span>
           <span class="item-desc">+${p.cps} CPS / 台</span>
+          <span class="energy-req" id="energy-req-${key}"></span>
+          <span class="milestone-badge" id="milestone-${key}">里程碑: x1</span>
           <span class="item-cost">花費: <span id="cost-${key}">${p.baseCost}</span> 晶礦</span>
         </div>
         <button class="buy-btn" id="buy-${key}" onclick="buyProducer('${key}')">購買</button>
@@ -278,6 +519,7 @@
       pContainer.appendChild(div);
     }
 
+    // 科技研發渲染
     const uContainer = document.getElementById("upgrades-container");
     uContainer.innerHTML = "";
     for (const key in gameState.upgrades) {
@@ -295,21 +537,93 @@
       `;
       uContainer.appendChild(div);
     }
+
+    // 暗物質商店渲染
+    const psContainer = document.getElementById("pshop-container");
+    psContainer.innerHTML = "";
+    for (const key in gameState.pshop) {
+      const ps = gameState.pshop[key];
+      const div = document.createElement("div");
+      div.className = "item-card";
+      div.innerHTML = `
+        <div class="item-info">
+          <span class="item-name">${ps.name} (<span id="ps-lv-${key}">0</span>/${ps.maxLevel})</span>
+          <span class="item-desc">${ps.desc}</span>
+          <span class="item-cost">花費: ${ps.cost} 暗物質</span>
+        </div>
+        <button class="buy-btn" id="buy-ps-${key}" onclick="buyPShop('${key}')">升級</button>
+      `;
+      psContainer.appendChild(div);
+    }
+
+    // 成就清單渲染
+    const aContainer = document.getElementById("achievements-container");
+    aContainer.innerHTML = "";
+    for (const key in gameState.achievements) {
+      const a = gameState.achievements[key];
+      const div = document.createElement("div");
+      div.className = `achieve-card ${a.unlocked ? "unlocked" : ""}`;
+      div.innerHTML = `
+        <div class="achieve-icon">${a.icon}</div>
+        <div class="item-info">
+          <span class="item-name">${a.name} ${a.unlocked ? "✓" : "(未解鎖)"}</span>
+          <span class="item-desc">${a.desc}</span>
+        </div>
+      `;
+      aContainer.appendChild(div);
+    }
   }
 
   function updateUI() {
     document.getElementById("coins-display").innerText = formatNum(gameState.coins);
     document.getElementById("cps-display").innerText = formatNum(getCPS());
+    document.getElementById("energy-display").innerText = formatNum(gameState.energy);
     document.getElementById("prestige-display").innerText = formatNum(gameState.prestigePoints);
     document.getElementById("click-power-display").innerText = formatNum(getClickPower());
 
+    // 能源狀態
+    const eStats = getEnergyStats();
+    const netSign = eStats.net >= 0 ? "+" : "";
+    document.getElementById("energy-rate-display").innerText = `${netSign}${eStats.net.toFixed(1)}/s (發電: ${eStats.gen.toFixed(1)} / 耗電: ${eStats.cons.toFixed(1)})`;
+
+    // 斷電警告
+    const powerWarning = document.getElementById("power-warning");
+    powerWarning.style.display = getPowerEfficiency() < 1.0 ? "block" : "none";
+
+    // 更新發電廠列表
+    for (const key in gameState.powerPlants) {
+      const plant = gameState.powerPlants[key];
+      const cost = getPowerPlantCost(key);
+      document.getElementById(`count-plant-${key}`).innerText = plant.count;
+      document.getElementById(`cost-plant-${key}`).innerText = formatNum(cost);
+      document.getElementById(`buy-plant-${key}`).disabled = gameState.coins < cost;
+    }
+
+    // 更新採礦設施列表
+    const effMult = 1 - (gameState.pshop.energyEfficiency.level * 0.1);
     for (const key in gameState.producers) {
+      const p = gameState.producers[key];
       const cost = getProducerCost(key);
-      document.getElementById(`count-${key}`).innerText = gameState.producers[key].count;
+      const mult = getProducerMilestoneMult(p.count);
+      const target = getNextMilestoneTarget(p.count);
+
+      document.getElementById(`count-${key}`).innerText = p.count;
       document.getElementById(`cost-${key}`).innerText = formatNum(cost);
+      
+      const reqEl = document.getElementById(`energy-req-${key}`);
+      if (p.energyReq > 0) {
+        const actualReq = (p.energyReq * effMult).toFixed(1);
+        reqEl.innerText = `⚡ 耗電: ${actualReq}/台`;
+        reqEl.className = getPowerEfficiency() < 1.0 ? "energy-req shortage" : "energy-req";
+      } else {
+        reqEl.innerText = `⚡ 無需消耗電力`;
+      }
+
+      document.getElementById(`milestone-${key}`).innerText = `里程碑: x${mult} (${target === 'MAX' ? '上限' : `${p.count}/${target}`})`;
       document.getElementById(`buy-${key}`).disabled = gameState.coins < cost;
     }
 
+    // 科技研發
     for (const key in gameState.upgrades) {
       const u = gameState.upgrades[key];
       const card = document.getElementById(`upgrade-card-${key}`);
@@ -321,25 +635,112 @@
       }
     }
 
+    // 暗物質商店
+    for (const key in gameState.pshop) {
+      const ps = gameState.pshop[key];
+      document.getElementById(`ps-lv-${key}`).innerText = ps.level;
+      const btn = document.getElementById(`buy-ps-${key}`);
+      btn.disabled = gameState.prestigePoints < ps.cost || ps.level >= ps.maxLevel;
+    }
+
+    // 轉生按鈕
     const pGain = getPrestigeGain();
     const pBtn = document.getElementById("prestige-btn");
     document.getElementById("prestige-gain-display").innerText = formatNum(pGain);
     pBtn.disabled = pGain <= 0;
+
+    // Buff 提示
+    const buffBanner = document.getElementById("buff-status");
+    if (buffTimer > 0) {
+      buffBanner.style.display = "block";
+      document.getElementById("buff-time").innerText = Math.ceil(buffTimer);
+    } else {
+      buffBanner.style.display = "none";
+    }
   }
 
-  // 5. 玩家交互邏輯
-  document.getElementById("main-click-btn").addEventListener("click", () => {
-    const power = getClickPower();
+  // 5. 浮動文字
+  function createFloatText(x, y, text, isCrit = false, isAchieve = false) {
+    const el = document.createElement("div");
+    let cls = "float-text";
+    if (isCrit) cls += " crit";
+    if (isAchieve) cls += " achieve";
+    el.className = cls;
+    el.innerText = text;
+
+    const offsetX = (Math.random() - 0.5) * 30;
+    el.style.left = `${x + offsetX}px`;
+    el.style.top = `${y - 10}px`;
+    document.body.appendChild(el);
+
+    el.addEventListener("animationend", () => el.remove());
+  }
+
+  // 6. 太空黃金隕石
+  function scheduleNextAsteroid() {
+    const delay = (Math.random() * 120 + 60) * 1000;
+    setTimeout(spawnAsteroid, delay);
+  }
+
+  function spawnAsteroid() {
+    const asteroid = document.createElement("div");
+    asteroid.className = "asteroid";
+    asteroid.innerHTML = "☄️";
+
+    const posX = Math.random() * (window.innerWidth - 120) + 30;
+    const posY = Math.random() * (window.innerHeight - 120) + 30;
+    asteroid.style.left = `${posX}px`;
+    asteroid.style.top = `${posY}px`;
+
+    asteroid.addEventListener("click", (e) => {
+      e.stopPropagation();
+      buffTimer = 15;
+      createFloatText(e.clientX, e.clientY, "🔥 狂暴 7 倍 CPS!", true);
+      asteroid.remove();
+    });
+
+    document.body.appendChild(asteroid);
+    setTimeout(() => { if (asteroid.parentNode) asteroid.remove(); }, 10000);
+    scheduleNextAsteroid();
+  }
+
+  // 7. 互動邏輯
+  function doManualClick(e) {
+    let power = getClickPower();
+    const isCrit = Math.random() < getCritChance();
+    if (isCrit) power *= 2;
+
     gameState.coins += power;
     gameState.totalCoins += power;
+    gameState.totalClicks++;
+
+    checkAchievements();
+
+    if (e) {
+      const displayText = `+${formatNum(power)}${isCrit ? " 暴擊!" : ""}`;
+      createFloatText(e.clientX, e.clientY, displayText, isCrit);
+    }
     updateUI();
-  });
+  }
+
+  document.getElementById("main-click-btn").addEventListener("click", doManualClick);
+
+  function buyPowerPlant(key) {
+    const cost = getPowerPlantCost(key);
+    if (gameState.coins >= cost) {
+      gameState.coins -= cost;
+      gameState.powerPlants[key].count++;
+      checkAchievements();
+      updateUI();
+    }
+  }
 
   function buyProducer(key) {
     const cost = getProducerCost(key);
     if (gameState.coins >= cost) {
       gameState.coins -= cost;
       gameState.producers[key].count++;
+      checkAchievements();
       updateUI();
     }
   }
@@ -353,21 +754,34 @@
     }
   }
 
+  function buyPShop(key) {
+    const ps = gameState.pshop[key];
+    if (gameState.prestigePoints >= ps.cost && ps.level < ps.maxLevel) {
+      gameState.prestigePoints -= ps.cost;
+      ps.level++;
+      updateUI();
+    }
+  }
+
   document.getElementById("prestige-btn").addEventListener("click", () => {
     const gain = getPrestigeGain();
     if (gain > 0 && confirm(`確定要進行量子轉生嗎？您將獲得 ${gain} 暗物質，但會重置金幣與設施！`)) {
       gameState.prestigePoints += gain;
       gameState.coins = 0;
       gameState.totalCoins = 0;
+      gameState.energy = 50;
+      for (const k in gameState.powerPlants) gameState.powerPlants[k].count = 0;
       for (const k in gameState.producers) gameState.producers[k].count = 0;
       for (const k in gameState.upgrades) gameState.upgrades[k].bought = false;
+      
+      checkAchievements();
       saveGame();
       initDOM();
       updateUI();
     }
   });
 
-  // 6. 存檔與離線收益
+  // 8. 存檔與離線機制
   function saveGame(manual = false) {
     gameState.lastSaveTime = Date.now();
     localStorage.setItem("incremental_game_save", JSON.stringify(gameState));
@@ -378,8 +792,16 @@
     const saved = localStorage.getItem("incremental_game_save");
     if (saved) {
       const parsed = JSON.parse(saved);
-      gameState = { ...defaultState, ...parsed };
-      
+      gameState = {
+        ...defaultState,
+        ...parsed,
+        powerPlants: { ...defaultState.powerPlants, ...(parsed.powerPlants || {}) },
+        producers: { ...defaultState.producers, ...(parsed.producers || {}) },
+        upgrades: { ...defaultState.upgrades, ...(parsed.upgrades || {}) },
+        pshop: { ...defaultState.pshop, ...(parsed.pshop || {}) },
+        achievements: { ...defaultState.achievements, ...(parsed.achievements || {}) }
+      };
+
       const now = Date.now();
       const offlineSeconds = (now - gameState.lastSaveTime) / 1000;
       if (offlineSeconds > 5) {
@@ -400,26 +822,48 @@
     }
   }
 
-  // 7. 主時間迴圈 (Game Loop)
+  // 9. 主時間迴圈
   let lastFrameTime = Date.now();
   function gameLoop() {
     const now = Date.now();
     const dt = (now - lastFrameTime) / 1000;
     lastFrameTime = now;
 
+    if (buffTimer > 0) {
+      buffTimer -= dt;
+      if (buffTimer < 0) buffTimer = 0;
+    }
+
+    const eStats = getEnergyStats();
+    gameState.energy += eStats.net * dt;
+    if (gameState.energy < 0) gameState.energy = 0;
+    if (eStats.net > 0) gameState.totalEnergy += eStats.net * dt;
+
+    const autoClickLevel = gameState.pshop.autoClick.level;
+    if (autoClickLevel > 0) {
+      autoClickAccumulator += dt * autoClickLevel;
+      while (autoClickAccumulator >= 1) {
+        doManualClick(null);
+        autoClickAccumulator -= 1;
+      }
+    }
+
     const gained = getCPS() * dt;
     gameState.coins += gained;
     gameState.totalCoins += gained;
 
+    checkAchievements();
     updateUI();
     requestAnimationFrame(gameLoop);
   }
 
   setInterval(() => saveGame(false), 10000);
 
+  // 啟動流程
   loadGame();
   initDOM();
   updateUI();
+  scheduleNextAsteroid();
   requestAnimationFrame(gameLoop);
 </script>
 </body>
